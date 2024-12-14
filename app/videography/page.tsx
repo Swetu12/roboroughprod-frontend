@@ -1,72 +1,94 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Service from '@/components/ui/Service';
 import { Syne } from 'next/font/google';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import Loader from '@/components/ui/Loader';
+import { motion } from 'framer-motion';
 
 const syne = Syne({
   subsets: ['latin'],
   weight: ['400', '600'],
 });
 
-const services = [
-  { slug: 'showreel', title: 'Showreel', description: 'Showreel', image: '/showreel.png' },
-  {
-    slug: 'kombucha-reel',
-    title: 'Kombucha - Product Promotion',
-    description: 'Kombucha - Product Promotion',
-    image: '/kombuchareel.png',
-  },
-  {
-    slug: 'puttshack-reel',
-    title: 'Puttshack Venue Promotion',
-    description: 'Puttshack Venue Promotion - Marketing',
-    image: '/putshackreel.png',
-  },
-  {
-    slug: 'cocktail-madness-reel',
-    title: 'Cocktail Madness - Commercial',
-    description: 'Cocktail Madness - Commercial',
-    image: '/cocktailreel.png',
-  },
-  { slug: 'actor', title: 'Actor - Trailer', description: 'Actor - Trailer', image: '/actor.png' },
-  { slug: 'showcase-skills-reel', title: 'Showcase Skills', description: 'Showcase Skills', image: '/skillsreel.png' },
-  {
-    slug: 'character-fashion-reel',
-    title: 'Character-Fashion',
-    description: 'Character-Fashion',
-    image: '/charackterreel.png',
-  },
-];
-
-const videography = [{ id: 1, body: 'Videography' }];
+type HomepageData = {
+  title: string;
+  services: {
+    title: string;
+    description: string;
+    image: { url: string };
+    slug: string;
+  }[];
+};
 
 const Page = () => {
   const router = useRouter();
+  const [data, setData] = useState<HomepageData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          'http://localhost:1337/api/videographies?populate%5Bservices%5D%5Bpopulate%5D%5Bimage%5D=true'
+        );
+        setData(res.data.data[0]);
+      } catch (error) {
+        setError('Failed to fetch data. Please try again later');
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleRedirect = (slug: string) => {
     router.push(`/videography/${slug}`);
   };
+
+  if (loading) return <Loader />;
+  if (error) return <div>{error}</div>;
+
+  const containerVariant = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, staggerChildren: 0.2 } },
+  };
+
+  const itemVariant = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  };
+
   return (
-    <div>
-      <div className={`flex justify-center w-full mt-20 text-4xl font-bold`}>
-        {videography.map((item) => (
-          <p key={item.id} className={`${syne.className} text-black`}>
-            {item.body}
-          </p>
+    <motion.div variants={containerVariant} initial="hidden" animate="visible" viewport={{ once: false, amount: 0.2 }}>
+      <motion.div variants={itemVariant} className={`flex justify-center w-full mt-20 text-4xl font-bold`}>
+        <p className={`${syne.className} text-black`}>{data?.title}</p>
+      </motion.div>
+      <motion.div variants={itemVariant} className="services-list">
+        {data?.services.map((service) => (
+          <motion.div
+            key={service.slug}
+            whileHover={{
+              scale: 1.05, // Scale up on hover
+              transition: { duration: 0.3 },
+            }}
+            whileTap={{ scale: 1, rotate: 1 }}
+          >
+            <Service
+              onClick={() => handleRedirect(service.slug)}
+              image={`http://localhost:1337${service.image.url}`}
+              title={service.title}
+              description={service.description}
+            />
+          </motion.div>
         ))}
-      </div>
-      {services.map((service) => (
-        <Service
-          key={service.slug}
-          onClick={() => handleRedirect(service.slug)}
-          image={service.image}
-          title={service.title}
-          description={service.description}
-        />
-      ))}
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
+
 export default Page;

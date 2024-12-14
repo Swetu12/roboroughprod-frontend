@@ -14,44 +14,103 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { IoCloseOutline } from 'react-icons/io5';
+import axios from 'axios';
+import { motion } from 'framer-motion';
 
 const navlinks = [
   { id: 1, icon: '/home.svg', href: '/' },
-  { id: 2, name: 'Work', href: '/work' },
-  { id: 3, name: 'About', href: '/about' },
-  { id: 4, name: 'Contact', href: '/contact' },
-  { id: 5, name: 'Resume', href: '/resume' },
+  { id: 2, name: 'Work', href: '#work' }, // Change href to anchor link
+  { id: 3, name: 'About', href: '#about' }, // Change href to anchor link
+  { id: 4, name: 'Contact', href: '#contact' }, // Change href to anchor link
+  { id: 5, name: 'Resume', href: '#resume' }, // Change href to anchor link
 ];
+
+interface NavLink {
+  id: number;
+  name: string;
+  href: string;
+}
 
 const Navbar = () => {
   const [position, setPosition] = useState('bottom');
   const [menuOpen, setMenuOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [navlinks, setNavlinks] = useState<NavLink[]>([]);
+  const currentPath = typeof window !== 'undefined' ? window.location.pathname : ''; // Get current path
 
   // UseEffect to set isClient to true after the component is mounted on the client
   useEffect(() => {
     setIsClient(true);
+
+    const fetchNavbarLinks = async () => {
+      try {
+        const res = await axios.get(
+          'http://localhost:1337/api/homepages?filters[documentId][$eq]=rxx7pczr4an4dbzjfcqzf5xk&populate[navbar][populate][link]=*'
+        );
+        const links = res.data.data[0]?.navbar?.link.map((link) => ({
+          id: link.id,
+          name: link.Title,
+          href: link.url,
+        }));
+
+        setNavlinks(links || []);
+      } catch (error) {
+        console.log('Error fetching navbar links: ', error);
+      }
+    };
+    fetchNavbarLinks();
   }, []);
+
+  const handleLinkClick = (href: string) => {
+    if (currentPath === '/') {
+      // On homepage: scroll to section
+      if (href.startsWith('#')) {
+        const section = document.querySelector(href);
+        if (section) {
+          section.scrollIntoView({
+            behavior: 'smooth',
+          });
+        }
+      }
+    } else {
+      // If not on homepage, navigate to homepage first, then scroll to section
+      window.location.href = '/'; // Redirect to homepage
+
+      // Use setTimeout to allow page load and then scroll to the section
+      setTimeout(() => {
+        const section = document.querySelector(href);
+        if (section) {
+          section.scrollIntoView({
+            behavior: 'smooth',
+          });
+        }
+      }, 100);
+    }
+  };
 
   return (
     <>
       {/*MOBILE NAV*/}
-      <div className={`flex items-center justify-between mx-6 mt-6 md:hidden overflow-x-hidden`}>
+      <motion.div className={`flex items-center justify-between mx-6 mt-6 md:hidden overflow-x-hidden`}>
         <Link href="/">
-          <div className={`bg-foreground w-12 h-12 cursor-pointer rounded-full items-center justify-center flex`}>
+          <motion.div
+            className={`bg-foreground w-12 h-12 cursor-pointer rounded-full items-center justify-center flex`}
+          >
             <RiHomeLine className={`w-8 h-8 text-gray-500`} />
-          </div>
+          </motion.div>
         </Link>
         <DropdownMenu onOpenChange={setMenuOpen}>
           <DropdownMenuTrigger>
-            <div className={`bg-foreground w-12 h-12 cursor-pointer rounded-full items-center justify-center flex`}>
+            <motion.div
+              className={`bg-foreground w-12 h-12 cursor-pointer rounded-full items-center justify-center flex`}
+            >
               {isClient &&
                 (menuOpen ? (
                   <IoCloseOutline className={`w-8 h-8 text-gray-500`} />
                 ) : (
                   <IoMdMenu className={`w-8 h-8 text-gray-500`} />
                 ))}
-            </div>
+            </motion.div>
           </DropdownMenuTrigger>
           <DropdownMenuContent className={`w-56 mr-10 rounded-xl shadow-gray-400 bg-foreground`}>
             <DropdownMenuLabel className={`text-lg`}>Robotto Production</DropdownMenuLabel>
@@ -67,9 +126,9 @@ const Navbar = () => {
                 ) : (
                   <DropdownMenuRadioItem key={link.id} value="icon-only">
                     <Link href="/" className={`w-full`}>
-                      <div className="flex items-center justify-start">
+                      <motion.div className="flex items-center justify-start">
                         <RiHomeLine className={`w-7 h-7 text-gray-500`} />
-                      </div>
+                      </motion.div>
                     </Link>
                   </DropdownMenuRadioItem>
                 )
@@ -77,29 +136,35 @@ const Navbar = () => {
             </DropdownMenuRadioGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
+      </motion.div>
       {/*PROPER NAV*/}
-      <nav className="justify-center items-center hidden md:flex mt-6 mx-12 lg:mx-28 bg-foreground rounded-full py-2.5">
-        <ul className="flex items-center mr-32">
-          <li key="icon" className="flex items-center">
+      <motion.nav className="sticky top-5 z-50 justify-center items-center hidden md:flex mt-6 mx-12 lg:mx-28 bg-foreground rounded-full py-2.5 shadow-md">
+        <motion.ul className="flex items-center mr-32">
+          <motion.li key="icon" className="flex items-center">
             <Link href="/" className="flex items-center justify-center px-4">
               <RiHomeLine className="w-7 h-7 text-gray-500" />
             </Link>
-          </li>
-        </ul>
-        <ul className="flex items-center justify-center space-x-28 mr-12">
-          {/* Text Links */}
+          </motion.li>
+        </motion.ul>
+        <motion.ul className="flex items-center justify-center space-x-28 mr-12">
           {navlinks
             .filter((link) => link.id !== 1)
             .map((link) => (
-              <li key={link.id}>
-                <Link href={link.href} className="text-base uppercase font-semibold text-[#393535]">
+              <motion.li key={link.id} className="relative group" initial="initial" whileHover="hovered">
+                <button
+                  onClick={() => handleLinkClick(link.href)}
+                  className="text-base uppercase font-semibold text-[#393535]"
+                >
                   {link.name}
-                </Link>
-              </li>
+                </button>
+                <motion.div
+                  className="absolute left-0 bottom-[-2px] h-[2px] bg-black w-0 group-hover:w-full transition-all duration-300"
+                  layout
+                />
+              </motion.li>
             ))}
-        </ul>
-      </nav>
+        </motion.ul>
+      </motion.nav>
     </>
   );
 };

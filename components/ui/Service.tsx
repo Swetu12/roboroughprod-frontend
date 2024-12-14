@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Syne } from 'next/font/google';
 import { GoArrowUpRight } from 'react-icons/go';
+import { motion } from 'framer-motion';
 
 const syne = Syne({
   subsets: ['latin'],
@@ -34,10 +35,16 @@ const Service = ({
         />
       </div>
       <div className={`flex justify-between items-center`}>
-        <div className={`text-black ml-6 md:ml-14 lg:ml-32 mt-5 space-y-1`}>
-          <p className={`${syne.className} text-xl font-semibold md:text-3xl`}>{title}</p>
-          <p className={`text-gray-500 text-sm md:text-base`}>{description}</p>
-        </div>
+        <motion.div className={`text-black ml-6 md:ml-14 lg:ml-32 mt-5 space-y-1`}>
+          <p
+            className={`${syne.className} text-xl font-semibold md:text-3xl group-hover:text-black transition-colors duration-300`}
+          >
+            {title}
+          </p>
+          <p className={`text-gray-500 text-sm md:text-base group-hover:text-black transition-colors duration-300`}>
+            {description}
+          </p>
+        </motion.div>
         <div className={`mx-6 md:mx-14 lg:mx-32`}>
           <GoArrowUpRight className={`text-black w-10 h-10`} />
         </div>

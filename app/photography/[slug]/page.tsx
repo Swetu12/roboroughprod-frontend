@@ -3,55 +3,22 @@
 import React, { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Syne } from 'next/font/google';
-import Image from 'next/image'; // Use this hook for client-side routing
+import Image from 'next/image';
+import axios from 'axios';
+import Loader from '@/components/ui/Loader'; // Use this hook for client-side routing
+import { motion } from 'framer-motion';
 
 const syne = Syne({
   subsets: ['latin'],
   weight: ['400', '600'],
 });
 
-const services = [
-  {
-    slug: 'vehicle-photography',
-    title: 'Vehicle Photography',
-    description: 'Vehicle Photography Description',
-    image: '/vehiclephotography.jpg',
-  },
-  {
-    slug: 'motor-sports-event-malle-mile-2024',
-    title: 'Motor Sports Event Malle Mile 2024',
-    description: 'Motor Sports Event Malle Mile 2024 Description',
-    image: '/eventphotography.jpg',
-  },
-  {
-    slug: 'motor-sports-event-malle-canyon-2024',
-    title: 'Motor Sports-The Malle Canyon 2024',
-    description: 'Motor Sports-The Malle Canyon 2024 Marketing',
-    image: '/canyon.jpg',
-  },
-  {
-    slug: 'property-photography',
-    title: 'Property Photography',
-    description: 'Property Photography Marketing',
-    image: '/propertyphotography.jpg',
-  },
-  {
-    slug: 'product-photography',
-    title: 'Product Photography',
-    description: 'Product Photography Marketing',
-    image: '/product.jpg',
-  },
-  {
-    slug: 'street-photography',
-    title: 'Street Photography',
-    description: 'Street Photography Marketing',
-    image: '/street.jpg',
-  },
-];
-
-const CategoryPage = () => {
+const PhotoPage = () => {
   const [slug, setSlug] = useState<string | undefined>(undefined);
-  const pathname = usePathname(); // Get the current pathname
+  const pathname = usePathname();
+  const [data, setData] = useState<any[]>([]); // Set initial state to an empty array
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Extract slug from the pathname
@@ -59,55 +26,77 @@ const CategoryPage = () => {
     if (pathSlug) {
       setSlug(pathSlug);
     }
+
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          'http://localhost:1337/api/photography-slugs?populate%5Bphotos%5D%5Bpopulate%5D%5Bvideo%5D=true'
+        );
+        console.log('I work here: ', res.data);
+        setData(res.data.data); // Set the entire data array
+      } catch (error) {
+        setError('Error fetching data. Please try again later');
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, [pathname]);
 
-  if (!slug) {
-    return <div>Loading...</div>;
+  if (loading) {
+    return <Loader />;
   }
 
-  const service = services.find((s) => s.slug === slug);
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  if (!slug) {
+    return <div className={`text-black`}>Invalid URL</div>;
+  }
+
+  const service = data.find((s: any) => s.slug === slug);
 
   if (!service) {
-    return <div>Service not found</div>;
+    return <div className={`text-black`}>Service not found</div>;
   }
 
+  const containerVariant = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, staggerChildren: 0.2 } },
+  };
+
+  const itemVariant = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  };
+
   return (
-    <div>
-      <h1 className={`text-black ${syne.className}  flex justify-center w-full mt-20 text-4xl font-bold`}>
+    <motion.div
+      variants={containerVariant}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+    >
+      <motion.h1
+        variants={itemVariant}
+        className={`text-black ${syne.className}  flex justify-center w-full mt-20 text-4xl font-bold`}
+      >
         {service.title}
-      </h1>
-      {slug === 'vehicle-photography' && (
-        <div className={`flex flex-col items-center w-full mt-20 space-y-4`}>
-          <Image src={service.image} alt={service.title} height={1000} width={1000} />
-        </div>
-      )}
-      {slug === 'motor-sports-event-malle-mile-2024' && (
-        <div className={`flex flex-col items-center w-full mt-20 space-y-4`}>
-          <Image src={service.image} alt={service.title} height={1000} width={1000} />
-        </div>
-      )}
-      {slug === 'motor-sports-event-malle-canyon-2024' && (
-        <div className={`flex flex-col items-center w-full mt-20 space-y-4`}>
-          <Image src={service.image} alt={service.title} height={1000} width={1000} />
-        </div>
-      )}
-      {slug === 'property-photography' && (
-        <div className={`flex flex-col items-center w-full mt-20 space-y-4`}>
-          <Image src={service.image} alt={service.title} height={1000} width={1000} />
-        </div>
-      )}
-      {slug === 'product-photography' && (
-        <div className={`flex flex-col items-center w-full mt-20 space-y-4`}>
-          <Image src={service.image} alt={service.title} height={1000} width={1000} />
-        </div>
-      )}
-      {slug === 'street-photography' && (
-        <div className={`flex flex-col items-center w-full mt-20 space-y-4`}>
-          <Image src={service.image} alt={service.title} height={1000} width={1000} />
-        </div>
-      )}
-    </div>
+      </motion.h1>
+      {service.photos.map((photo: any, index: number) => (
+        <motion.div variants={itemVariant} key={index} className={`flex flex-col items-center w-full mt-20 space-y-4`}>
+          <Image
+            src={`http://localhost:1337${photo.video.url}`} // Corrected to use video URL for images
+            alt={service.title}
+            height={1000}
+            width={1000}
+          />
+        </motion.div>
+      ))}
+    </motion.div>
   );
 };
 
-export default CategoryPage;
+export default PhotoPage;

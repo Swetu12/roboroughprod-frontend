@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 
-const ExperienceBadge = ({ software, image }: { software: string; image: string }) => {
+const ExperienceBadge = ({ software, image }: Badge) => {
   return (
     <div>
       <div className={`inline-flex gap-1`}>
