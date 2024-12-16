@@ -8,6 +8,7 @@ import Image from 'next/image';
 import axios from 'axios';
 import Loader from '@/components/ui/Loader';
 import { motion } from 'framer-motion';
+import { fetchFooterData } from '@/app/api/fetchData';
 
 const syne = Syne({
   subsets: ['latin'],
@@ -51,21 +52,18 @@ const Footer = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const loadData = async () => {
       try {
-        const res = await axios.get(
-          'http://localhost:1337/api/homepages?populate%5Bfooter%5D%5Bpopulate%5D%5Bcta%5D%5Bpopulate%5D'
-        );
-        console.log('API Response:', res.data); // Debugging
-        setData(res.data.data[0]); // Access the first object
+        const footerData = await fetchFooterData();
+        setData(footerData); // This should now contain the full data, including footer
       } catch (error) {
-        setError('Failed to fetch data. Please try again later');
-        console.error(error);
+        setError('Failed to fetch footer data. Please try again later.');
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
+
+    loadData();
   }, []);
 
   const defaultFooter = {

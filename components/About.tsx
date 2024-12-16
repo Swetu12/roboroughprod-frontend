@@ -6,6 +6,7 @@ import Skill from '@/components/ui/Skill';
 import axios from 'axios';
 import Loader from '@/components/ui/Loader';
 import { motion } from 'framer-motion';
+import { fetchAboutData } from '@/app/api/fetchData';
 
 const syne = Syne({
   subsets: ['latin'],
@@ -37,10 +38,8 @@ const About = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          'http://localhost:1337/api/homepages?populate%5Babout%5D%5Bpopulate%5D%5Bpfp%5D=true&populate%5Babout%5D%5Bpopulate%5D%5Bexperience%5D%5Bpopulate%5D%5Bcard%5D%5Bpopulate%5D%5Bimage%5D=true'
-        );
-        setData(res.data.data[0]);
+        const res = await fetchAboutData();
+        setData(res);
       } catch (err) {
         setError('Failed to fetch data. Please try again later');
         console.log(err);

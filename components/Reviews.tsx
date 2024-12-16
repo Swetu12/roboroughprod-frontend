@@ -6,6 +6,7 @@ import { Syne } from 'next/font/google';
 import Review from '@/components/ui/Review';
 import Loader from '@/components/ui/Loader';
 import { motion } from 'framer-motion';
+import { fetchReviewsData } from '@/app/api/fetchData';
 
 const syne = Syne({
   subsets: ['latin'],
@@ -32,10 +33,8 @@ const Reviews = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          'http://localhost:1337/api/homepages?populate%5Bclients%5D%5Bpopulate%5D%5Bcard%5D%5Bpopulate%5D%5Bimage%5D=true'
-        );
-        setData(res.data.data[0]);
+        const res = await fetchReviewsData();
+        setData(res);
       } catch (error) {
         setError('Failed to fetch data. Please try again later');
         console.log(error);

@@ -8,6 +8,7 @@ import Clients from '@/components/ui/Clients';
 import axios from 'axios';
 import Loader from '@/components/ui/Loader';
 import { motion } from 'framer-motion';
+import { fetchHeroData } from '@/app/api/fetchData';
 
 const syne = Syne({
   subsets: ['latin'],
@@ -35,27 +36,10 @@ const Hero = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          'http://localhost:1337/api/homepages?populate=hero.badge.image&populate=hero.cta&populate=hero.clientLogos'
-        );
-
-        const data = res.data.data[0].hero;
-
-        // Map the image URLs properly for the badges
-        const badgesWithUrl = data.badge.map((badge: any) => ({
-          name: badge.name,
-          image: badge.image ? `http://localhost:1337${badge.image.url}` : null,
-        }));
-
-        // Set the fetched data into state
-        setHeroData({
-          title: data.title,
-          cta: data.cta[0],
-          badge: badgesWithUrl,
-          clientLogos: data.clientLogos.map((logo: any) => `http://localhost:1337${logo.url}`),
-        });
+        const data = await fetchHeroData();
+        setHeroData(data);
       } catch (error) {
-        console.error('Error fetching hero data:', error);
+        console.error('Error fetching data.', error);
       }
     };
 

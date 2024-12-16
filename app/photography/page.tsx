@@ -8,6 +8,7 @@ import axios from 'axios';
 import { BounceLoader, ClipLoader, ScaleLoader } from 'react-spinners';
 import Loader from '@/components/ui/Loader';
 import { motion } from 'framer-motion';
+import { fetchPhotographyData } from '@/app/api/fetchData';
 
 const syne = Syne({
   subsets: ['latin'],
@@ -33,10 +34,8 @@ const Page = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          'http://localhost:1337/api/photographies?populate%5Bservices%5D%5Bpopulate%5D%5Bimage%5D=true'
-        );
-        setData(res.data.data[0]);
+        const res = await fetchPhotographyData();
+        setData(res);
       } catch (error) {
         setError('Failed to fetch data. Please try again later');
         console.log(error);

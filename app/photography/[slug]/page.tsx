@@ -7,6 +7,7 @@ import Image from 'next/image';
 import axios from 'axios';
 import Loader from '@/components/ui/Loader'; // Use this hook for client-side routing
 import { motion } from 'framer-motion';
+import { fetchPhotographySlugData } from '@/app/api/fetchData';
 
 const syne = Syne({
   subsets: ['latin'],
@@ -29,11 +30,8 @@ const PhotoPage = () => {
 
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          'http://localhost:1337/api/photography-slugs?populate%5Bphotos%5D%5Bpopulate%5D%5Bvideo%5D=true'
-        );
-        console.log('I work here: ', res.data);
-        setData(res.data.data); // Set the entire data array
+        const res = await fetchPhotographySlugData();
+        setData(res);
       } catch (error) {
         setError('Error fetching data. Please try again later');
         console.error(error);
@@ -72,6 +70,8 @@ const PhotoPage = () => {
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   };
 
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
   return (
     <motion.div
       variants={containerVariant}
@@ -88,7 +88,7 @@ const PhotoPage = () => {
       {service.photos.map((photo: any, index: number) => (
         <motion.div variants={itemVariant} key={index} className={`flex flex-col items-center w-full mt-20 space-y-4`}>
           <Image
-            src={`http://localhost:1337${photo.video.url}`} // Corrected to use video URL for images
+            src={`${API_URL}${photo.video.url}`} // Corrected to use video URL for images
             alt={service.title}
             height={1000}
             width={1000}

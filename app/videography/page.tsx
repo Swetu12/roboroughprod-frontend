@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import Loader from '@/components/ui/Loader';
 import { motion } from 'framer-motion';
+import { fetchVideographyData } from '@/app/api/fetchData';
 
 const syne = Syne({
   subsets: ['latin'],
@@ -32,10 +33,8 @@ const Page = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          'http://localhost:1337/api/videographies?populate%5Bservices%5D%5Bpopulate%5D%5Bimage%5D=true'
-        );
-        setData(res.data.data[0]);
+        const res = await fetchVideographyData();
+        setData(res);
       } catch (error) {
         setError('Failed to fetch data. Please try again later');
         console.log(error);

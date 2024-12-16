@@ -16,6 +16,7 @@ import {
 import { IoCloseOutline } from 'react-icons/io5';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import { fetchNavbarLinks } from '@/app/api/fetchData';
 
 const navlinks = [
   { id: 1, icon: '/home.svg', href: '/' },
@@ -40,25 +41,16 @@ const Navbar = () => {
 
   // UseEffect to set isClient to true after the component is mounted on the client
   useEffect(() => {
-    setIsClient(true);
-
-    const fetchNavbarLinks = async () => {
+    const getNavbarData = async () => {
       try {
-        const res = await axios.get(
-          'http://localhost:1337/api/homepages?filters[documentId][$eq]=rxx7pczr4an4dbzjfcqzf5xk&populate[navbar][populate][link]=*'
-        );
-        const links = res.data.data[0]?.navbar?.link.map((link) => ({
-          id: link.id,
-          name: link.Title,
-          href: link.url,
-        }));
-
-        setNavlinks(links || []);
+        const links = await fetchNavbarLinks();
+        setNavlinks(links);
       } catch (error) {
-        console.log('Error fetching navbar links: ', error);
+        console.error(error);
       }
     };
-    fetchNavbarLinks();
+
+    getNavbarData();
   }, []);
 
   const handleLinkClick = (href: string) => {

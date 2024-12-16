@@ -6,11 +6,14 @@ import { Syne } from 'next/font/google';
 import axios from 'axios';
 import Loader from '@/components/ui/Loader';
 import { motion } from 'framer-motion';
+import { fetchVideographySlugData } from '@/app/api/fetchData';
 
 const syne = Syne({
   subsets: ['latin'],
   weight: ['400', '600'],
 });
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const CategoryPage = () => {
   const [slug, setSlug] = useState<string | undefined>(undefined);
@@ -28,10 +31,8 @@ const CategoryPage = () => {
 
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          'http://localhost:1337/api/videography-slugs?populate[reels][populate][video]=true'
-        );
-        setData(res.data.data); // Set the entire data array
+        const res = await fetchVideographySlugData();
+        setData(res);
       } catch (error) {
         setError('Error fetching data. Please try again later');
         console.error(error);
@@ -88,7 +89,7 @@ const CategoryPage = () => {
         {service.reels.map((reel: any, index: number) => (
           <motion.div variants={itemVariant} key={reel.id} className="flex justify-center">
             <video controls width="1200" height="800">
-              <source src={`http://localhost:1337${reel.video.url}`} type="video/mp4" />
+              <source src={`${API_URL}${reel.video.url}`} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </motion.div>

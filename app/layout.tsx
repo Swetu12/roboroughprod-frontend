@@ -8,6 +8,7 @@ import Footer from '@/components/Footer';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import Intro from '@/components/Intro';
+import Cursor from '@/components/ui/Cursor';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -40,6 +41,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`}>
+        <Cursor />
         {/* Conditionally render the Navbar and Footer */}
         {!showIntro && <Navbar />}
 

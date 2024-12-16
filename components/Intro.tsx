@@ -20,7 +20,7 @@ const Intro = () => {
         key="intro"
       >
         <motion.h1
-          className={`text-4xl font-bold text-black ${syne.className}`}
+          className={`md:text-4xl text-xl font-bold text-black ${syne.className}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

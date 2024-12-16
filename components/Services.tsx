@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import Loader from '@/components/ui/Loader';
 import { motion } from 'framer-motion';
+import { fetchServicesData } from '@/app/api/fetchData';
 
 const Services = () => {
   const router = useRouter();
@@ -14,31 +15,21 @@ const Services = () => {
   const [loading, setLoading] = useState(true); // Track loading state
   const [error, setError] = useState<string | null>(null); // Track error state
 
-  const fetchServices = async () => {
+  const fetchData = async () => {
     try {
-      setLoading(true); // Start loading
-      const response = await axios.get(
-        'http://localhost:1337/api/homepages?populate[services][populate][service][populate]=image'
-      );
-
-      const homepage = response.data?.data?.[0];
-
-      if (homepage && homepage.services && homepage.services.service) {
-        setServicesData(homepage.services.service);
-        setError(null); // Clear any previous errors if data is fetched successfully
-      } else {
-        throw new Error('No services found in the response');
-      }
+      setLoading(true);
+      const services = await fetchServicesData();
+      setServicesData(services);
+      setError(null);
     } catch (error) {
-      console.error('Error fetching services:', error);
-      setError('Failed to fetch services. Please try again later.'); // Set error message
+      setError('Failed to fetch services.');
     } finally {
-      setLoading(false); // End loading
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchServices();
+    fetchData();
   }, []);
 
   const handleRedirect = (url: string) => {
