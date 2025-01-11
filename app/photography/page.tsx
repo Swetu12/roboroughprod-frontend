@@ -4,8 +4,6 @@ import React, { useEffect, useState } from 'react';
 import Service from '@/components/ui/Service';
 import { Syne } from 'next/font/google';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
-import { BounceLoader, ClipLoader, ScaleLoader } from 'react-spinners';
 import Loader from '@/components/ui/Loader';
 import { motion } from 'framer-motion';
 import { fetchPhotographyData } from '@/app/api/fetchData';
@@ -25,6 +23,8 @@ type HomepageData = {
   }[];
 };
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337';
+
 const Page = () => {
   const router = useRouter();
   const [data, setData] = useState<HomepageData | null>(null);
@@ -38,7 +38,7 @@ const Page = () => {
         setData(res);
       } catch (error) {
         setError('Failed to fetch data. Please try again later');
-        console.log(error);
+        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -80,7 +80,7 @@ const Page = () => {
           >
             <Service
               onClick={() => handleRedirect(service.slug)}
-              image={`http://localhost:1337${service.image.url}`}
+              image={service.image.url?.startsWith('http') ? service.image.url : `${API_URL}${service.image.url}`}
               title={service.title}
               description={service.description}
             />

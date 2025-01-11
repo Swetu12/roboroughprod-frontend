@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Syne } from 'next/font/google';
 import Review from '@/components/ui/Review';
 import Loader from '@/components/ui/Loader';
@@ -80,7 +79,13 @@ const Reviews = () => {
         {data?.clients[0]?.card.map((review, index) => (
           <Review
             key={index}
-            image={review.image ? `http://localhost:1337${review.image.url}` : '/default-image.jpg'}
+            image={
+              review.image
+                ? review.image.url?.startsWith('http')
+                  ? review.image.url
+                  : `http://localhost:1337${review.image.url}`
+                : '/default-image.jpg'
+            }
             body={review.review}
             name={review.name}
             role={review.description}

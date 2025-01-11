@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import Service from '@/components/ui/Service';
 import { Syne } from 'next/font/google';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
 import Loader from '@/components/ui/Loader';
 import { motion } from 'framer-motion';
 import { fetchVideographyData } from '@/app/api/fetchData';
@@ -79,7 +78,9 @@ const Page = () => {
           >
             <Service
               onClick={() => handleRedirect(service.slug)}
-              image={`http://localhost:1337${service.image.url}`}
+              image={
+                service.image.url?.startsWith('http') ? service.image.url : `http://localhost:1337${service.image.url}`
+              }
               title={service.title}
               description={service.description}
             />

@@ -71,23 +71,28 @@ const Services = () => {
       ) : (
         <motion.div variants={itemVariant} className={`flex flex-wrap justify-center mt-6`}>
           {servicesData.length > 0 ? (
-            servicesData.map((service) => (
-              <motion.div
-                key={service.id}
-                whileHover={{
-                  scale: 1.05, // Scale up on hover
-                  transition: { duration: 0.3 },
-                }}
-                whileTap={{ scale: 1, rotate: 1 }}
-              >
-                <Service
-                  onClick={() => handleRedirect(service.title.toLowerCase())}
-                  image={`http://localhost:1337${service.image?.url}`}
-                  title={service.title}
-                  description={service.description}
-                />
-              </motion.div>
-            ))
+            servicesData.map((service) => {
+              // Handle image URL concatenation, ensuring it's properly formed
+              const imageUrl = service.image?.url ? `${service.image.url}` : '/default-image.jpg';
+
+              return (
+                <motion.div
+                  key={service.id}
+                  whileHover={{
+                    scale: 1.05, // Scale up on hover
+                    transition: { duration: 0.3 },
+                  }}
+                  whileTap={{ scale: 1, rotate: 1 }}
+                >
+                  <Service
+                    onClick={() => handleRedirect(service.title.toLowerCase())}
+                    image={imageUrl} // Using the concatenated or default image URL
+                    title={service.title}
+                    description={service.description}
+                  />
+                </motion.div>
+              );
+            })
           ) : (
             <p>No services found.</p>
           )}

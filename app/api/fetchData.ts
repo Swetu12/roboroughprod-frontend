@@ -10,16 +10,30 @@ export const fetchHeroData = async () => {
     const data = res.data.data[0].hero;
 
     // Map the image URLs properly for the badges
-    const badgesWithUrl = data.badge.map((badge: any) => ({
-      name: badge.name,
-      image: badge.image ? `${API_URL}${badge.image.url}` : null,
-    }));
+    const badgesWithUrl = Array.isArray(data.badge)
+      ? data.badge.map((badge: any) => ({
+          name: badge.name,
+          image: badge.image
+            ? badge.image.url.startsWith('http') // Check if the URL is absolute (Cloudinary)
+              ? badge.image.url // Keep Cloudinary URL as is
+              : `${API_URL}${badge.image.url}` // Append API_URL for relative Strapi images
+            : null,
+        }))
+      : [];
+
+    // Map client logos URLs similarly
+    const clientLogosWithUrl = data.clientLogos.map(
+      (logo: any) =>
+        logo.url.startsWith('http') // Check if it's already an absolute URL (Cloudinary)
+          ? logo.url // Keep Cloudinary URL as is
+          : `${API_URL}${logo.url}` // Append API_URL for relative Strapi images
+    );
 
     return {
       title: data.title,
       cta: data.cta[0],
       badge: badgesWithUrl,
-      clientLogos: data.clientLogos.map((logo: any) => `${API_URL}${logo.url}`),
+      clientLogos: clientLogosWithUrl,
     };
   } catch (error) {
     console.error('Error fetching hero data:', error);

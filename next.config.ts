@@ -6,8 +6,12 @@ const nextConfig: NextConfig = {
       {
         protocol: 'http',
         hostname: 'localhost',
-        port: '1337', // The port your Strapi backend is using
-        pathname: '/uploads/**', // Adjust this if your image paths are different
+        pathname: '/**', // Matches all paths on localhost
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '/**', // Matches all paths on Cloudinary
       },
     ],
   },

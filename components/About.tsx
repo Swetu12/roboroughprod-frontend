@@ -3,7 +3,6 @@ import { GoArrowDownRight } from 'react-icons/go';
 import Image from 'next/image';
 import { Syne } from 'next/font/google';
 import Skill from '@/components/ui/Skill';
-import axios from 'axios';
 import Loader from '@/components/ui/Loader';
 import { motion } from 'framer-motion';
 import { fetchAboutData } from '@/app/api/fetchData';
@@ -89,7 +88,11 @@ const About = () => {
         <motion.div variants={itemVariant} className={`w-full lg:flex-[1] flex justify-center lg:justify-start`}>
           {data?.about.pfp ? (
             <Image
-              src={`http://localhost:1337${data.about.pfp.url}`}
+              src={
+                data.about.pfp.url?.startsWith('http')
+                  ? data.about.pfp.url
+                  : `http://localhost:1337${data.about.pfp.url}`
+              }
               alt="Profile Picture"
               width={1800}
               height={552}
@@ -108,45 +111,19 @@ const About = () => {
           </motion.div>
 
           {/* Experience Section */}
-          <motion.div variants={itemVariant} className={`mt-10`}>
-            <p className={`text-[#393535] text-lg font-semibold`}>{data?.about.experience[0].title}</p>
-            <motion.div variants={itemVariant} className={`mt-5 space-y-5`}>
-              {data?.about.experience[0].card.map((exp, index) => (
-                <Skill
-                  key={index}
-                  image={`http://localhost:1337${exp.image.url}`}
-                  skill={exp.jobtitle}
-                  date={exp.period}
-                />
-              ))}
+          {data?.about.experience.map((expGroup, groupIndex) => (
+            <motion.div key={groupIndex} variants={itemVariant} className={`mt-10`}>
+              <p className={`text-[#393535] text-lg font-semibold`}>{expGroup.title}</p>
+              <motion.div variants={itemVariant} className={`mt-5 space-y-5`}>
+                {expGroup.card.map((exp, index) => {
+                  const experienceImageUrl = exp.image.url?.startsWith('http')
+                    ? exp.image.url
+                    : `http://localhost:1337${exp.image.url}`;
+                  return <Skill key={index} image={experienceImageUrl} skill={exp.jobtitle} date={exp.period} />;
+                })}
+              </motion.div>
             </motion.div>
-          </motion.div>
-          <motion.div variants={itemVariant} className={`mt-10`}>
-            <p className={`text-[#393535] text-lg font-semibold`}>{data?.about.experience[1].title}</p>
-            <motion.div variants={itemVariant} className={`mt-5 space-y-5`}>
-              {data?.about.experience[1].card.map((exp, index) => (
-                <Skill
-                  key={index}
-                  image={`http://localhost:1337${exp.image.url}`}
-                  skill={exp.jobtitle}
-                  date={exp.period}
-                />
-              ))}
-            </motion.div>
-          </motion.div>
-          <motion.div variants={itemVariant} className={`mt-10`}>
-            <p className={`text-[#393535] text-lg font-semibold`}>{data?.about.experience[2].title}</p>
-            <motion.div variants={itemVariant} className={`mt-5 space-y-5`}>
-              {data?.about.experience[2].card.map((exp, index) => (
-                <Skill
-                  key={index}
-                  image={`http://localhost:1337${exp.image.url}`}
-                  skill={exp.jobtitle}
-                  date={exp.period}
-                />
-              ))}
-            </motion.div>
-          </motion.div>
+          ))}
         </motion.div>
       </motion.div>
     </motion.div>

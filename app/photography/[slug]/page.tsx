@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Syne } from 'next/font/google';
 import Image from 'next/image';
-import axios from 'axios';
 import Loader from '@/components/ui/Loader'; // Use this hook for client-side routing
 import { motion } from 'framer-motion';
 import { fetchPhotographySlugData } from '@/app/api/fetchData';
@@ -70,8 +69,6 @@ const PhotoPage = () => {
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   };
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
   return (
     <motion.div
       variants={containerVariant}
@@ -85,16 +82,31 @@ const PhotoPage = () => {
       >
         {service.title}
       </motion.h1>
-      {service.photos.map((photo: any, index: number) => (
-        <motion.div variants={itemVariant} key={index} className={`flex flex-col items-center w-full mt-20 space-y-4`}>
-          <Image
-            src={`${API_URL}${photo.video.url}`} // Corrected to use video URL for images
-            alt={service.title}
-            height={1000}
-            width={1000}
-          />
-        </motion.div>
-      ))}
+      {service.photos.map((photo: any, index: number) => {
+        // Check if the 'video' object exists and if it has the formats object with a valid URL
+        const videoData = photo.video; // 'video' field inside photo
+        const imageUrl = videoData?.formats?.medium?.url; // Accessing the image URL from the 'formats' object
+
+        // If the image URL is not found, return null (skip this photo)
+        if (!imageUrl) {
+          return null;
+        }
+
+        return (
+          <motion.div
+            variants={itemVariant}
+            key={index}
+            className={`flex flex-col items-center w-full mt-20 space-y-4`}
+          >
+            <Image
+              src={imageUrl} // Use the valid photo URL
+              alt={service.title}
+              height={1000}
+              width={1000}
+            />
+          </motion.div>
+        );
+      })}
     </motion.div>
   );
 };
