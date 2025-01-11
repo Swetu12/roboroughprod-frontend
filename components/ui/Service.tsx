@@ -13,13 +13,11 @@ const Service = ({
   image,
   title,
   description,
-  url,
   onClick,
 }: {
   image: string;
   title: string;
   description: string;
-  url: string;
   onClick: () => void;
 }) => {
   return (

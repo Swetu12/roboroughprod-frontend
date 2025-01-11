@@ -9,9 +9,20 @@ import Loader from '@/components/ui/Loader';
 import { motion } from 'framer-motion';
 import { fetchServicesData } from '@/app/api/fetchData';
 
+// Define the structure of the service data
+interface ServiceType {
+  id: string;
+  title: string;
+  description: string;
+  image: {
+    url: string;
+  };
+  // Add any other properties you expect in the service
+}
+
 const Services = () => {
   const router = useRouter();
-  const [servicesData, setServicesData] = useState([]);
+  const [servicesData, setServicesData] = useState<ServiceType[]>([]); // Specify the type
   const [loading, setLoading] = useState(true); // Track loading state
   const [error, setError] = useState<string | null>(null); // Track error state
 
@@ -19,7 +30,7 @@ const Services = () => {
     try {
       setLoading(true);
       const services = await fetchServicesData();
-      setServicesData(services);
+      setServicesData(services); // Assuming the fetched data matches ServiceType[]
       setError(null);
     } catch (error) {
       setError('Failed to fetch services.');
