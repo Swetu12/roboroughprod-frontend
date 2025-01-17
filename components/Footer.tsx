@@ -34,16 +34,6 @@ const socialMedia = [
     img: '/insta.svg',
     link: 'https://www.instagram.com/robo_roughprod/',
   },
-  {
-    id: 2,
-    img: '/twit.svg',
-    link: 'https://x.com/10Halexx',
-  },
-  {
-    id: 3,
-    img: '/link.svg',
-    link: 'https://www.linkedin.com/in/robert-obreja-b3628819a/',
-  },
 ];
 
 const Footer = () => {
@@ -129,12 +119,27 @@ const Footer = () => {
 
           {/* Button Section */}
           <motion.div variants={itemVariant}>
-            <TailwindButton text={footerData.cta.text} />
+            <div
+              onClick={() => {
+                const targetSection = document.querySelector(footerData.cta.url);
+                if (targetSection) {
+                  targetSection.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+            >
+              <TailwindButton text={footerData.cta.text} />
+            </div>
           </motion.div>
 
           {/* Copyright Section */}
-          <motion.div variants={itemVariant}>
+          <motion.div variants={itemVariant} className={`space-y-2`}>
             <p className={`text-black mt-32`}>{footerData.copyright}</p>
+            <p className={`text-gray-500 mt-32`}>
+              CO-Founder of{' '}
+              <Link href="https://www.rolleenagency.com/" className={`hover:underline`}>
+                rolleenagency.com
+              </Link>
+            </p>
           </motion.div>
         </motion.div>
       )}

@@ -85,7 +85,16 @@ const Hero = () => {
           </p>
         </motion.div>
         <motion.div variants={itemVariant} className={`flex justify-center mt-16`}>
-          <TailwindButton text={heroData.cta.text} />
+          <div
+            onClick={() => {
+              const targetSection = document.querySelector(heroData.cta.url);
+              if (targetSection) {
+                targetSection.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+          >
+            <TailwindButton text={heroData.cta.text} />
+          </div>
         </motion.div>
         <motion.div variants={itemVariant}>
           <Clients />
