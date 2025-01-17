@@ -6,6 +6,7 @@ import { Syne } from 'next/font/google';
 import Loader from '@/components/ui/Loader';
 import { motion } from 'framer-motion';
 import { fetchVideographySlugData } from '@/app/api/fetchData';
+import { LayoutGridDemo } from '@/components/ui/LayoutGridDemo';
 
 const syne = Syne({
   subsets: ['latin'],

@@ -28,7 +28,7 @@ const Review = ({
         <Stars className={`lg:ml-64 ml-20`} />
       </div>
       <div>
-        <p className={`text-gray-600 text-sm mx-6 break-words w-[500px]`}>{body}</p>
+        <p className={`text-gray-600 text-sm mx-6 break-words lg:w-[500px] w-62`}>{body}</p>
       </div>
     </div>
   );

@@ -158,3 +158,15 @@ export const fetchVideographySlugData = async () => {
     throw new Error('Error fetching videography slug data');
   }
 };
+
+export const fetchImageLayoutData = async () => {
+  try {
+    const res = await axios.get(
+      `http://localhost:1337/api/videography-slugs?filters[slug][$eq]=placeholder&populate[imageLayout][populate]=thumbnail`
+    );
+    return res.data.data;
+  } catch (error) {
+    console.error(error);
+    throw new Error('Error fetching videography slug data');
+  }
+};

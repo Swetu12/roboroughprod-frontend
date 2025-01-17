@@ -28,7 +28,10 @@ const Service = ({
           alt={title}
           width={1800}
           height={552}
-          className={`rounded-3xl w-full sm:w-64 md:w-[1000px] md:h-[324px] lg:w-[1800px] lg:h-[552px]`}
+          className={`rounded-3xl w-full sm:w-64 md:w-[1000px] md:h-[324px] lg:w-[1800px] lg:h-[552px] object-cover`}
+          style={{
+            objectPosition: 'center center', // Center the image (you can adjust this if you need to focus on a different part of the image)
+          }}
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 100vw, 1800px"
         />
       </div>
