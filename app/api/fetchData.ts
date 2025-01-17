@@ -44,7 +44,7 @@ export const fetchHeroData = async () => {
 export const fetchNavbarLinks = async () => {
   try {
     const res = await axios.get(
-      `${API_URL}/api/homepages?filters[documentId][$eq]=rxx7pczr4an4dbzjfcqzf5xk&populate[navbar][populate][link]=*`
+      `${API_URL}/api/homepages?filters[documentId][$eq]=r2s5dap34w5g4hee00ddmoju&populate[navbar][populate][link]=*`
     );
     const links = res.data.data[0]?.navbar?.link.map((link: any) => ({
       id: link.id,

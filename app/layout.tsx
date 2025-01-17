@@ -41,7 +41,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`}>
-        <Cursor />
         {/* Conditionally render the Navbar and Footer */}
         {!showIntro && <Navbar />}
 

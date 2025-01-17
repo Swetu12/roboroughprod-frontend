@@ -26,7 +26,7 @@ const Intro = () => {
           exit={{ opacity: 0 }}
           transition={{ duration: 1, delay: 0.3 }}
         >
-          ROBOTTOPRODUCTION
+          ROBOROUGHPROD
         </motion.h1>
       </motion.div>
     </AnimatePresence>

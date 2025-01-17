@@ -44,6 +44,7 @@ const Navbar = () => {
     const getNavbarData = async () => {
       try {
         const links = await fetchNavbarLinks();
+        console.log('navbar: ', links);
         setNavlinks(links);
       } catch (error) {
         console.error(error);
