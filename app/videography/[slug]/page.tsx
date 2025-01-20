@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Syne } from 'next/font/google';
 import Loader from '@/components/ui/Loader';
 import { motion } from 'framer-motion';
-import { fetchVideoGalleryData, fetchVideographySlugData, fetchVideoSlugGalleryData } from '@/app/api/fetchData'; // Importing functions
+import { fetchVideoGalleryData, fetchVideographySlugData } from '@/app/api/fetchData'; // Importing functions
 import Image from 'next/image';
 
 const syne = Syne({
