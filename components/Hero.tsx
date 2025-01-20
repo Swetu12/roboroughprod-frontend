@@ -79,7 +79,7 @@ const Hero = () => {
         </motion.div>
         <motion.div variants={itemVariant}>
           <p
-            className={`text-black ${syne.className} text-5xl lg:mx-96 md:mx-20 md:text-6xl lg:text-7xl mx-10 text-center mt-60`}
+            className={`text-black ${syne.className} text-4xl sm:text-5xl lg:mx-96 md:mx-20 md:text-6xl lg:text-7xl mx-10 text-center mt-60`}
           >
             {heroData.title}
           </p>

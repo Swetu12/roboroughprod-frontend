@@ -112,7 +112,7 @@ const Footer = () => {
           {/* Title Section */}
           <motion.p
             variants={itemVariant}
-            className={`text-black ${syne.className} text-5xl md:text-6xl lg:text-7xl lg:mx-52 mx-6`}
+            className={`text-black ${syne.className} text-4xl sm:text-5xl md:text-6xl lg:text-7xl lg:mx-52 mx-6`}
           >
             {footerData.title}
           </motion.p>
@@ -133,10 +133,10 @@ const Footer = () => {
 
           {/* Copyright Section */}
           <motion.div variants={itemVariant} className={`space-y-2`}>
-            <p className={`text-black mt-32`}>{footerData.copyright}</p>
+            <p className={`text-black mt-32 text-sm sm:text-base`}>{footerData.copyright}</p>
             <p className={`text-gray-500 mt-32`}>
               CO-Founder of{' '}
-              <Link href="https://www.rolleenagency.com/" className={`hover:underline`}>
+              <Link href="https://www.rolleenagency.com/" className={`hover:underline text-sm sm:text-base`}>
                 rolleenagency.com
               </Link>
             </p>
