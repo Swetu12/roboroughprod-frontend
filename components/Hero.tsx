@@ -9,6 +9,7 @@ import axios from 'axios';
 import Loader from '@/components/ui/Loader';
 import { motion } from 'framer-motion';
 import { fetchHeroData } from '@/app/api/fetchData';
+import ContactUs from '@/components/ui/ContactUs';
 
 const syne = Syne({
   subsets: ['latin'],
@@ -32,6 +33,7 @@ interface HeroData {
 
 const Hero = () => {
   const [heroData, setHeroData] = useState<HeroData | null>(null);
+  const [showContactUs, setShowContactUs] = useState(false); // State to toggle ContactUs visibility
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,10 +89,8 @@ const Hero = () => {
         <motion.div variants={itemVariant} className={`flex justify-center mt-16`}>
           <div
             onClick={() => {
-              const targetSection = document.querySelector(heroData.cta.url);
-              if (targetSection) {
-                targetSection.scrollIntoView({ behavior: 'smooth' });
-              }
+              // Toggle the ContactUs component visibility
+              setShowContactUs((prev) => !prev);
             }}
           >
             <TailwindButton text={heroData.cta.text} />
@@ -98,6 +98,7 @@ const Hero = () => {
         </motion.div>
         <motion.div variants={itemVariant}>
           <Clients />
+          {showContactUs && <ContactUs />} {/* Show ContactUs component when state is true */}
         </motion.div>
       </motion.div>
     </>

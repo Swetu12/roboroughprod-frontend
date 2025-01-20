@@ -162,8 +162,18 @@ export const fetchVideographySlugData = async () => {
 export const fetchImageLayoutData = async () => {
   try {
     const res = await axios.get(
-      `http://localhost:1337/api/videography-slugs?filters[slug][$eq]=placeholder&populate[imageLayout][populate]=thumbnail`
+      `${API_URL}/api/videography-slugs?filters[slug][$eq]=placeholder&populate[imageLayout][populate]=thumbnail`
     );
+    return res.data.data;
+  } catch (error) {
+    console.error(error);
+    throw new Error('Error fetching videography slug data');
+  }
+};
+export const fetchVideoGalleryData = async () => {
+  try {
+    const res = await axios.get(`http://localhost:1337/api/videography-slugs?populate[gallery][populate][image]=true`);
+    console.log('gallery api: ', res.data.data);
     return res.data.data;
   } catch (error) {
     console.error(error);

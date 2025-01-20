@@ -9,6 +9,7 @@ import axios from 'axios';
 import Loader from '@/components/ui/Loader';
 import { motion } from 'framer-motion';
 import { fetchFooterData } from '@/app/api/fetchData';
+import ContactUs from '@/components/ui/ContactUs';
 
 const syne = Syne({
   subsets: ['latin'],
@@ -40,6 +41,7 @@ const Footer = () => {
   const [data, setData] = useState<HomepageData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showContactUs, setShowContactUs] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -119,16 +121,10 @@ const Footer = () => {
 
           {/* Button Section */}
           <motion.div variants={itemVariant}>
-            <div
-              onClick={() => {
-                const targetSection = document.querySelector(footerData.cta.url);
-                if (targetSection) {
-                  targetSection.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
-            >
+            <div onClick={() => setShowContactUs((prev) => !prev)}>
               <TailwindButton text={footerData.cta.text} />
             </div>
+            {showContactUs && <ContactUs />}
           </motion.div>
 
           {/* Copyright Section */}

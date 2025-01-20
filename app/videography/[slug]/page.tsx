@@ -5,8 +5,8 @@ import { usePathname } from 'next/navigation';
 import { Syne } from 'next/font/google';
 import Loader from '@/components/ui/Loader';
 import { motion } from 'framer-motion';
-import { fetchVideographySlugData } from '@/app/api/fetchData';
-import { LayoutGridDemo } from '@/components/ui/LayoutGridDemo';
+import { fetchVideoGalleryData, fetchVideographySlugData, fetchVideoSlugGalleryData } from '@/app/api/fetchData'; // Importing functions
+import Image from 'next/image';
 
 const syne = Syne({
   subsets: ['latin'],
@@ -18,12 +18,32 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337';
 const CategoryPage = () => {
   const [slug, setSlug] = useState<string | undefined>(undefined);
   const pathname = usePathname();
-  const [data, setData] = useState<any[]>([]); // Set initial state to an empty array
+  const [data, setData] = useState<any[]>([]);
+  const [gallery, setGallery] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Fetch gallery data
   useEffect(() => {
-    // Extract slug from the pathname
+    const fetchGalleryData = async () => {
+      try {
+        const res = await fetchVideoGalleryData(); // Fetch gallery data
+        if (res && res[0]?.gallery) {
+          // Assuming res is an array, check the first object for gallery
+          console.log('image api response: ', res[0].gallery);
+          setGallery(res[0].gallery); // Set gallery data to state
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Error fetching gallery data');
+        console.error(err);
+      }
+    };
+
+    fetchGalleryData();
+  }, []);
+
+  // Fetch videography data and handle slug
+  useEffect(() => {
     const pathSlug = pathname?.split('/').pop();
     if (pathSlug) {
       setSlug(pathSlug);
@@ -31,15 +51,16 @@ const CategoryPage = () => {
 
     const fetchData = async () => {
       try {
-        const res = await fetchVideographySlugData();
-        setData(res);
-      } catch (error) {
-        setError('Error fetching data. Please try again later');
-        console.error(error);
+        const res = await fetchVideographySlugData(); // Fetch videography data
+        setData(res); // Set videography data to state
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Error fetching videography data');
+        console.error(err);
       } finally {
         setLoading(false);
       }
     };
+
     fetchData();
   }, [pathname]);
 
@@ -48,17 +69,17 @@ const CategoryPage = () => {
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return <div className="text-red-500">{error}</div>;
   }
 
   if (!slug) {
-    return <div className={`text-black`}>Invalid URL</div>;
+    return <div className="text-black">Invalid URL</div>;
   }
 
   const service = data.find((s: any) => s.slug === slug);
 
   if (!service) {
-    return <div className={`text-black`}>Service not found</div>;
+    return <div className="text-black">Service not found</div>;
   }
 
   const containerVariant = {
@@ -78,15 +99,16 @@ const CategoryPage = () => {
       whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}
     >
+      {/* Title */}
       <motion.h1
         variants={itemVariant}
-        className={`text-black ${syne.className}  flex justify-center w-full mt-20 text-4xl font-bold`}
+        className={`text-black ${syne.className} flex justify-center w-full mt-20 text-4xl font-bold`}
       >
         {service.title}
       </motion.h1>
-
+      {/* Video Section */}
       <motion.div variants={itemVariant} className="flex flex-col items-center mt-8 space-y-8">
-        {service.reels.map((reel: any, index: number) => (
+        {service.reels.map((reel: any) => (
           <motion.div variants={itemVariant} key={reel.id} className="flex justify-center">
             <video controls width="1200" height="800">
               <source
@@ -97,6 +119,29 @@ const CategoryPage = () => {
             </video>
           </motion.div>
         ))}
+      </motion.div>
+      {/* Gallery Section */}
+      <motion.div variants={itemVariant} className="mt-40 px-4 sm:px-8 lg:px-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4">
+          {gallery.length > 0 ? (
+            gallery.map((imageObj: any, index: number) => (
+              <div key={index}>
+                <Image
+                  src={
+                    imageObj.image.url?.startsWith('http')
+                      ? imageObj.image.url
+                      : `http://localhost:1337${imageObj.image.url}`
+                  }
+                  alt={imageObj.image.name || 'Gallery Image'}
+                  width={2000}
+                  height={800}
+                />
+              </div>
+            ))
+          ) : (
+            <div>No images available</div> // Fallback when no gallery data is present
+          )}
+        </div>
       </motion.div>
     </motion.div>
   );
