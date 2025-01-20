@@ -172,7 +172,7 @@ export const fetchImageLayoutData = async () => {
 };
 export const fetchVideoGalleryData = async () => {
   try {
-    const res = await axios.get(`http://localhost:1337/api/videography-slugs?populate[gallery][populate][image]=true`);
+    const res = await axios.get(`${API_URL}/api/videography-slugs?populate[gallery][populate][image]=true`);
     console.log('gallery api: ', res.data.data);
     return res.data.data;
   } catch (error) {
