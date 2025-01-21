@@ -73,7 +73,7 @@ const Hero = () => {
       >
         <motion.div
           variants={itemVariant}
-          className={`inline-flex gap-4 justify-center -mt-10 w-full absolute overflow-x-hidden`}
+          className={`inline-flex md-phone:gap-4 gap-1 justify-center -mt-10 w-full absolute overflow-x-hidden`}
         >
           {heroData.badge.map((badge, index) => (
             <ExperienceBadge software={badge.name} image={badge.image} key={index} />

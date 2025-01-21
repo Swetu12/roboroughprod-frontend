@@ -25,10 +25,10 @@ const Review = ({
           <p className={`text-black text-sm font-semibold`}>{name}</p>
           <p className={`text-gray-500 text-xs`}>{role}</p>
         </div>
-        <Stars className={`lg:ml-64 ml-20`} />
+        <Stars className={`lg:ml-64 ml-20 laptop-sm:hidden`} />
       </div>
       <div>
-        <p className={`text-gray-600 text-sm mx-6 break-words lg:w-[500px] w-62`}>{body}</p>
+        <p className={`text-gray-600 text-sm mx-6 break-words laptop-sm:w-[200px] lg:w-[500px] w-62`}>{body}</p>
       </div>
     </div>
   );

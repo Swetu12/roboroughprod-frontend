@@ -14,6 +14,27 @@ export default {
   darkmode: 'class',
   theme: {
     extend: {
+      screens: {
+        // Mobile sizes
+        'sm-phone': '320px', // Small phones
+        'md-phone': '375px', // Medium phones
+        'lg-phone': '414px', // Large phones
+
+        // Tablet sizes
+        tablet: '600px', // Portrait tablets
+        'tablet-landscape': '768px', // Landscape tablets
+
+        // Laptop sizes
+        'laptop-sm': '1024px', // Small laptops
+        'laptop-lg': '1366px', // Large laptops
+
+        // Desktop sizes
+        desktop: '1440px', // Regular desktops
+        'desktop-xl': '1920px', // Large desktops
+
+        // Ultra-wide
+        'ultra-wide': '2560px', // 4K and beyond
+      },
       colors: {
         background: '#F0EEE5',
         foreground: '#FFFCF2',

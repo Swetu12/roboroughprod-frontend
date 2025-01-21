@@ -108,7 +108,7 @@ const About = () => {
           <motion.div className={`space-y-5`}>
             <p className={`${syne.className} text-[#393535] text-3xl md:text-4xl font-bold`}>{data?.about.title}</p>
             <p
-              className={`text-[#393535] text-base md:text-lg break-words lg:w-[1100px] w-[330px] sm:w-[400px] md:w-[800px]`}
+              className={`text-[#393535] text-base md:text-lg break-words lg:w-[1100px] laptop-sm:w-[500px] w-[250px] desktop:w-[800px] md-phone:w-[330px] tablet-landscape:w-[650px] tablet:w-[550px] sm:w-[400px] md:w-[800px]`}
             >
               {data?.about.description}
             </p>

@@ -129,10 +129,13 @@ const Footer = () => {
 
           {/* Copyright Section */}
           <motion.div variants={itemVariant} className={`space-y-2`}>
-            <p className={`text-black mt-32 text-sm sm:text-base`}>{footerData.copyright}</p>
-            <p className={`text-gray-500 mt-32`}>
+            <p className={`text-black mt-32 text-xs md-phone:text-sm sm:text-base`}>{footerData.copyright}</p>
+            <p className={`text-gray-500 text-xs sm:text-base mt-32`}>
               CO-Founder of{' '}
-              <Link href="https://www.rolleenagency.com/" className={`hover:underline text-sm sm:text-base`}>
+              <Link
+                href="https://www.rolleenagency.com/"
+                className={`hover:underline text-xs md-phone:text-sm sm:text-base`}
+              >
                 rolleenagency.com
               </Link>
             </p>
