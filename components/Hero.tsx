@@ -5,7 +5,6 @@ import { Syne } from 'next/font/google';
 import ExperienceBadge from '@/components/ui/ExperienceBadge';
 import TailwindButton from '@/components/ui/TailwindButton';
 import Clients from '@/components/ui/Clients';
-import axios from 'axios';
 import Loader from '@/components/ui/Loader';
 import { motion } from 'framer-motion';
 import { fetchHeroData } from '@/app/api/fetchData';

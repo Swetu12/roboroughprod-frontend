@@ -6,7 +6,8 @@ import { Syne } from 'next/font/google';
 import { useRouter } from 'next/navigation';
 import Loader from '@/components/ui/Loader';
 import { motion } from 'framer-motion';
-import { fetchPhotographyData } from '@/app/api/fetchData';
+import { fetchPhotographyData, homeMeta, photoMeta } from '@/app/api/fetchData';
+import { NextSeo } from 'next-seo';
 
 const syne = Syne({
   subsets: ['latin'],
@@ -23,6 +24,12 @@ type HomepageData = {
   }[];
 };
 
+interface SeoMetadata {
+  title: string;
+  meta_description: string;
+  keywords: string[] | undefined; // Allow for undefined keywords
+}
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337';
 
 const Page = () => {
@@ -30,6 +37,17 @@ const Page = () => {
   const [data, setData] = useState<HomepageData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [seo, setSeo] = useState<SeoMetadata | null>(null);
+
+  useEffect(() => {
+    const fetchSeoData = async () => {
+      const metadata = await photoMeta();
+      console.log('Fetched photo Seo Data: ', metadata);
+      setSeo(metadata);
+    };
+
+    fetchSeoData();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,6 +71,10 @@ const Page = () => {
   if (loading) return <Loader />;
   if (error) return <div>{error}</div>;
 
+  if (!seo) {
+    return <Loader />;
+  }
+
   const containerVariant = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, staggerChildren: 0.2 } },
@@ -63,8 +85,24 @@ const Page = () => {
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   };
 
+  const keywords = seo.keywords && seo.keywords.length > 0 ? seo.keywords.join(', ') : 'default, keywords';
+
   return (
     <motion.div variants={containerVariant} initial="hidden" animate="visible" viewport={{ once: false, amount: 0.2 }}>
+      <NextSeo
+        title={seo.title || 'Default Title'}
+        description={seo.meta_description || 'Default Description'}
+        openGraph={{
+          title: seo.title || 'Default Title',
+          description: seo.meta_description || 'Default Description',
+        }}
+        additionalMetaTags={[
+          {
+            name: 'keywords',
+            content: keywords,
+          },
+        ]}
+      />
       <motion.div variants={itemVariant} className={`flex justify-center w-full mt-20 text-4xl font-bold`}>
         <p className={`${syne.className} text-black`}>{data?.title}</p>
       </motion.div>

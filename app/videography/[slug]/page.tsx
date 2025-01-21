@@ -5,13 +5,20 @@ import { usePathname } from 'next/navigation';
 import { Syne } from 'next/font/google';
 import Loader from '@/components/ui/Loader';
 import { motion } from 'framer-motion';
-import { fetchVideoGalleryData, fetchVideographySlugData } from '@/app/api/fetchData'; // Importing functions
+import { fetchVideoGalleryData, fetchVideographySlugData, homeMeta, videoSlugMeta } from '@/app/api/fetchData'; // Importing functions
 import Image from 'next/image';
+import { NextSeo } from 'next-seo';
 
 const syne = Syne({
   subsets: ['latin'],
   weight: ['400', '600'],
 });
+
+interface SeoMetadata {
+  title: string;
+  meta_description: string;
+  keywords: string[] | undefined; // Allow for undefined keywords
+}
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337';
 
@@ -21,7 +28,18 @@ const CategoryPage = () => {
   const [data, setData] = useState<any[]>([]);
   const [gallery, setGallery] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [seo, setSeo] = useState<SeoMetadata | null>(null);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSeoData = async () => {
+      const metadata = await videoSlugMeta();
+      console.log('Fetched video slug Seo Data: ', metadata);
+      setSeo(metadata);
+    };
+
+    fetchSeoData();
+  }, []);
 
   // Fetch gallery data
   useEffect(() => {
@@ -64,6 +82,10 @@ const CategoryPage = () => {
     fetchData();
   }, [pathname]);
 
+  if (!seo) {
+    return <Loader />;
+  }
+
   if (loading) {
     return <Loader />;
   }
@@ -92,6 +114,8 @@ const CategoryPage = () => {
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   };
 
+  const keywords = seo.keywords && seo.keywords.length > 0 ? seo.keywords.join(', ') : 'default, keywords';
+
   return (
     <motion.div
       variants={containerVariant}
@@ -99,6 +123,20 @@ const CategoryPage = () => {
       whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}
     >
+      <NextSeo
+        title={seo.title || 'Default Title'}
+        description={seo.meta_description || 'Default Description'}
+        openGraph={{
+          title: seo.title || 'Default Title',
+          description: seo.meta_description || 'Default Description',
+        }}
+        additionalMetaTags={[
+          {
+            name: 'keywords',
+            content: keywords,
+          },
+        ]}
+      />
       {/* Title */}
       <motion.h1
         variants={itemVariant}

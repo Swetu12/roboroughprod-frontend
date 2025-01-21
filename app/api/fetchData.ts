@@ -180,3 +180,53 @@ export const fetchVideoGalleryData = async () => {
     throw new Error('Error fetching videography slug data');
   }
 };
+
+export const homeMeta = async () => {
+  try {
+    const { data } = await axios.get(`${API_URL}/api/homepages?populate[seo]=*`);
+    return data.data;
+  } catch (error) {
+    console.error('Error fetching data: ', error);
+    return [];
+  }
+};
+
+export const videoMeta = async () => {
+  try {
+    const { data } = await axios.get(`${API_URL}/api/videographies?populate[seo]=*`);
+    return data.data;
+  } catch (error) {
+    console.error('error fetching metadata: ', error);
+    return [];
+  }
+};
+
+export const videoSlugMeta = async () => {
+  try {
+    const { data } = await axios.get(`${API_URL}/api/videography-slugs?populate[seo]=*`);
+    return data.data;
+  } catch (error) {
+    console.error('error fetching metadata: ', error);
+    return [];
+  }
+};
+
+export const photoMeta = async () => {
+  try {
+    const { data } = await axios.get(`${API_URL}/api/photographies?populate[seo]=*`);
+    return data.data;
+  } catch (error) {
+    console.error('error fetching metadata: ', error);
+    return [];
+  }
+};
+
+export const photoSlugMeta = async () => {
+  try {
+    const { data } = await axios.get(`${API_URL}/api/photography-slugs?populate[seo]=*`);
+    return data.data;
+  } catch (error) {
+    console.error('error fetching metadata: ', error);
+    return [];
+  }
+};

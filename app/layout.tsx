@@ -1,14 +1,14 @@
 'use client';
 
-import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Intro from '@/components/Intro';
-import Cursor from '@/components/ui/Cursor';
+import { DefaultSeo, NextSeo } from 'next-seo';
+import defaultSEO from '@/next-seo.config';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -40,7 +40,12 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <title>RoboroughProd</title>
+        <link rel="icon" href="/frontend/app/favicon.ico" />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`}>
+        <DefaultSeo {...defaultSEO} />
         {/* Conditionally render the Navbar and Footer */}
         {!showIntro && <Navbar />}
 
