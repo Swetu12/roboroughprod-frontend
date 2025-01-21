@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { NextSeo } from 'next-seo';
+import { DefaultSeo, NextSeo } from 'next-seo';
 import Hero from '@/components/Hero';
 import Services from '@/components/Services';
 import About from '@/components/About';
 import Reviews from '@/components/Reviews';
 import { homeMeta } from '@/app/api/fetchData';
 import Loader from '@/components/ui/Loader';
+import defaultSEO from '@/next-seo.config';
 
 interface SeoMetadata {
   title: string;
@@ -36,6 +37,7 @@ export default function Home() {
 
   return (
     <>
+      <DefaultSeo {...defaultSEO} />
       <NextSeo
         title={seo.title || 'Default Title'}
         description={seo.meta_description || 'Default Description'}

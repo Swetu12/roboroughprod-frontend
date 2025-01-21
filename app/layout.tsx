@@ -41,11 +41,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>RoboroughProd</title>
+        <title>RoboroughProd - Professional Video & Photography</title>
         <link rel="icon" href="/frontend/app/favicon.ico" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`}>
-        <DefaultSeo {...defaultSEO} />
         {/* Conditionally render the Navbar and Footer */}
         {!showIntro && <Navbar />}
 
